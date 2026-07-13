@@ -111,6 +111,8 @@ interface AssetRowProps {
 
 const AssetRow: React.FC<AssetRowProps> = ({ asset, isSelected, onToggle, onDelete }) => {
   const [imgError, setImgError] = useState(false);
+  const [copied, setCopied] = useState(false);
+  
   const isImage = isImageMime(asset.mimetype ?? '');
   const proxyUrl = getProxyUrl(asset);
   const displayName = asset.original_name ?? asset.filename ?? asset.storage_key ?? 'Unnamed';
@@ -118,6 +120,17 @@ const AssetRow: React.FC<AssetRowProps> = ({ asset, isSelected, onToggle, onDele
   const catIcon = CATEGORY_ICON[asset.category ?? 'misc'] ?? CATEGORY_ICON['misc'];
   const catIconColor =
     CATEGORY_ICON_COLOR[asset.category ?? 'misc'] ?? CATEGORY_ICON_COLOR['misc'];
+
+  const handleCopyLink = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const origin = import.meta.env?.VITE_API_ORIGIN || 'http://localhost:3000';
+    const constructedUrl = `${origin}/api/assets/by-key/${asset.storage_key}`;
+    
+    navigator.clipboard.writeText(constructedUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   return (
     <CmsItemRow
@@ -142,9 +155,22 @@ const AssetRow: React.FC<AssetRowProps> = ({ asset, isSelected, onToggle, onDele
           <Text variant="body2" overrideClassName="font-semibold text-sm text-primary truncate">
             {displayName}
           </Text>
-          <Text variant="caption" color="secondary" overrideClassName="text-xs truncate">
-            {asset.mimetype ?? asset.category ?? '—'}
-          </Text>
+          <Box flex direction='row' align="center" className="gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="p-0 h-auto text-xs font-normal text-primary hover:underline"
+              onClick={handleCopyLink}
+            >
+              {copied ? 'Copied!' : 'Copy Link'}
+            </Button>
+            <Text variant="caption" color="secondary" overrideClassName="text-xs truncate">
+              |
+            </Text>
+            <Text variant="caption" color="secondary" overrideClassName="text-xs truncate">
+              {asset.mimetype ?? asset.category ?? '—'}
+            </Text>
+          </Box>
         </>
       }
       badgesSlot={
