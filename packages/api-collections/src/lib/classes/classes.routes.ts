@@ -14,6 +14,15 @@ router.post('/sync', async (_req, res, next) => {
   }
 });
 
+router.get('/filters', async (_req, res, next) => {
+  try {
+    const options = await classesService.findFilterOptions();
+    res.status(200).json(options);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get('/category/:category', async (req, res, next) => {
   try {
     const records = await classesService.findByCategory(req.params.category);
@@ -36,6 +45,10 @@ const crudRouter = createCrudRouter(classesService, {
   onCreate: CreateClassSchema,
   onUpdate: UpdateClassSchema,
   forcePagination: true,
+  search: { fields: ['name'] },
+  filterableFields: ['gender'],
+  anyOfFilter: { queryParam: 'category', fields: ['category1', 'category2', 'category3'] },
+  dateRangeFilter: { startField: 'start_date', endField: 'end_date' },
 });
 
 router.use(crudRouter);

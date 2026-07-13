@@ -13,7 +13,7 @@ export const validate = (schema: ZodSchema): RequestHandler =>
     const result = schema.safeParse(req.body);
     if (!result.success) {
       const validationError = new Error(`Validation failed on ${req.method} ${req.originalUrl}`);
-      
+
       Object.assign(validationError, {
         statusCode: 400,
         type: 'ValidationError',
@@ -30,6 +30,21 @@ export interface CrudRouterHooks {
   onCreate?: ZodSchema;
   onUpdate?: ZodSchema;
   readonly forcePagination?: boolean;
+  readonly search?: {
+    readonly queryParam?: string;
+    readonly fields: readonly string[];
+  };
+  readonly filterableFields?: readonly string[];
+  readonly anyOfFilter?: {
+    readonly queryParam: string;
+    readonly fields: readonly string[];
+  };
+  readonly dateRangeFilter?: {
+    readonly startField: string;
+    readonly endField: string;
+    readonly startParam?: string;
+    readonly endParam?: string;
+  };
 }
 
 const parsePaginationQuery = (req: Request): PaginationQuery => ({
@@ -38,6 +53,55 @@ const parsePaginationQuery = (req: Request): PaginationQuery => ({
   sort: typeof req.query.sort === 'string' ? req.query.sort : undefined,
   order: req.query.order === 'desc' ? 'desc' : 'asc',
 });
+
+const applyFilterHooks = (req: Request, hooks: CrudRouterHooks, query: PaginationQuery): PaginationQuery => {
+  const enriched: PaginationQuery = { ...query };
+
+  if (hooks.search?.fields.length) {
+    const param = hooks.search.queryParam ?? 'q';
+    const value = req.query[param];
+    if (typeof value === 'string' && value) {
+      enriched.search = value;
+      enriched.searchFields = hooks.search.fields;
+    }
+  }
+
+  if (hooks.filterableFields?.length) {
+    const filters: Record<string, string> = {};
+    for (const field of hooks.filterableFields) {
+      const value = req.query[field];
+      if (typeof value === 'string' && value) filters[field] = value;
+    }
+    if (Object.keys(filters).length > 0) enriched.filters = filters;
+  }
+
+  if (hooks.anyOfFilter) {
+    const value = req.query[hooks.anyOfFilter.queryParam];
+    if (typeof value === 'string' && value) {
+      enriched.filterAnyOf = { fields: hooks.anyOfFilter.fields, value };
+    }
+  }
+
+  if (hooks.dateRangeFilter) {
+    const startParam = hooks.dateRangeFilter.startParam ?? 'startDate';
+    const endParam = hooks.dateRangeFilter.endParam ?? 'endDate';
+    const start = req.query[startParam];
+    const end = req.query[endParam];
+    const startValue = typeof start === 'string' && start ? start : undefined;
+    const endValue = typeof end === 'string' && end ? end : undefined;
+
+    if (startValue || endValue) {
+      enriched.dateRange = {
+        startField: hooks.dateRangeFilter.startField,
+        endField: hooks.dateRangeFilter.endField,
+        start: startValue,
+        end: endValue,
+      };
+    }
+  }
+
+  return enriched;
+};
 
 export const createCrudRouter = <T>(
   service: CrudService<T>,
@@ -69,7 +133,9 @@ export const createCrudRouter = <T>(
       const hasPaginationParams = req.query.page !== undefined || req.query.limit !== undefined;
 
       if (hasPaginationParams || hooks.forcePagination) {
-        const result = await service.readPage(parsePaginationQuery(req));
+        const baseQuery = parsePaginationQuery(req);
+        const enrichedQuery = applyFilterHooks(req, hooks, baseQuery);
+        const result = await service.readPage(enrichedQuery);
         res.status(200).json(result);
         return;
       }

@@ -63,15 +63,9 @@ const PrivacyPolicyPage: React.FC = () => {
       className="min-h-screen"
     >
       
-        
-        <Box flex direction="col" className="border-b border-surface3-contrast pb-8 mb-10">
-          <Text color="primary" variant="h2" overrideClassName="mb-4 primary-font">
-            Privacy Policy
-          </Text>
           <Text color="surface3-contrast" variant="subtitle1" overrideClassName="opacity-70 mb-4">
             Last Modified: July 2026
           </Text>
-        </Box>
         <Box className="space-y-8">
           {comprehensivePolicyTemplate.map((section, index) => (
             <Box key={index} flex direction='col' className='my-2 py-2'>
