@@ -22,15 +22,15 @@ const createDefaultAvatar = (firstName: string, lastName: string): NonNullable<U
     size: 'md',
     status: 'offline',
     shape: 'circle',
-    background: 'linear-gradient(135deg, #0f5066, #e2e8f0)',
+    background: 'linear-gradient(135deg, #ea154a, #F5F9FA)',
   };
 };
 
 const createDefaultBanner = (): NonNullable<User['user_banner']> => ({
   variance: 0.75,
   cell_size: 40,
-  x_colors: ['#0f5066', '#115e7a', '#1e293b'],
-  y_colors: ['#1e293b', '#64748b', '#e2e8f0'],
+  x_colors: ['#ea154a', '#BF3F4D', '#121314'],
+  y_colors: ['#121314', '#c5dbe0', '#F5F9FA'],
 });
 
 const RANGE_TO_MS: Record<Exclude<GrowthRange, 'all'>, number> = {

@@ -9,7 +9,10 @@ export const Footer: React.FC<FooterProps> = ({ pages, footerPages, renderLink }
   const mainPages = pages.filter((page: Page) => page.navigation?.location === 'main');
 
   return (
-    <Box color="surface2" className="w-full">
+    <Box 
+      color="surface2" 
+      overrideClassName="relative z-40 w-full bg-surface2 text-surface2-contrast shadow-[0_-1px_2px_0_rgba(0,0,0,0.05)]"
+    >
       <Box flex direction="col" className="px-4 sm:px-6 lg:px-8 py-2">
         <FooterNavRow pages={mainPages} renderLink={renderLink} />
         {footerPages.length > 0 && (

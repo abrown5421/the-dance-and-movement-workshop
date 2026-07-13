@@ -46,7 +46,7 @@ const validate = (vals: SignUpFormValues): SignUpFormErrors => {
 const toggleBtnStyle: React.CSSProperties = {
   position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
   background: 'none', border: 'none', cursor: 'pointer', padding: '4px',
-  display: 'flex', alignItems: 'center', color: '#64748b', zIndex: 20,
+  display: 'flex', alignItems: 'center', color: '#c5dbe0', zIndex: 20,
 };
 
 const SignUp: React.FC = () => {
@@ -198,9 +198,9 @@ const SignUp: React.FC = () => {
         </form>
 
         <Box flex direction="row" align="center" style={{ width: '100%', gap: '12px' }}>
-          <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
+          <div style={{ flex: 1, height: '1px', background: '#F5F9FA' }} />
           <Text variant="caption" overrideClassName="text-slate-400 text-xs">Already have an account?</Text>
-          <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
+          <div style={{ flex: 1, height: '1px', background: '#F5F9FA' }} />
         </Box>
 
         <NavigationLink pageKey="login" asButton>Sign in instead</NavigationLink>

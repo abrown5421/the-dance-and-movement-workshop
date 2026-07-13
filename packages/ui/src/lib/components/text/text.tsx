@@ -76,7 +76,6 @@ const CLASS_CATEGORIES: Array<{ prefix: string; propClasses: (variant: TextVaria
     },
   },
   {
-    // italic
     prefix: 'italic',
     propClasses: (_, decoration) => decoration?.italic ? ['italic'] : [],
   },
@@ -139,8 +138,30 @@ function buildClasses(
   return [...filtered, overrideClassName].join(' ').trim();
 }
 
+const AMPERSAND_REGEX = /(&)/g;
+
+const injectAmpersandStyle = (text: string): React.ReactNode[] =>
+  text.split(AMPERSAND_REGEX).map((part, index) =>
+    part === '&' ? (
+      <span key={index} className="text-primary">
+        &
+      </span>
+    ) : (
+      part
+    )
+  );
+
+const parseAndHighlight = (nodes: React.ReactNode): React.ReactNode =>
+  React.Children.map(nodes, (node) =>
+    typeof node === 'string'
+      ? injectAmpersandStyle(node)
+      : React.isValidElement<{ children?: React.ReactNode }>(node) && node.props.children
+      ? React.cloneElement(node, {}, parseAndHighlight(node.props.children))
+      : node
+  );
+
 export const Text: React.FC<React.PropsWithChildren<TextProps>> = ({
-  color = 'primary',
+  color = 'surface-contrast',
   variant = 'body',
   decoration,
   font,
@@ -161,7 +182,7 @@ export const Text: React.FC<React.PropsWithChildren<TextProps>> = ({
 
   return (
     <Tag className={resolvedClassName} style={style} {...props}>
-      {children}
+      {parseAndHighlight(children)}
     </Tag>
   );
 };
