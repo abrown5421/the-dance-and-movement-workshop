@@ -33,7 +33,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      <Box flex justify="between" align="center" color="surface2" className="h-[72px]">
+      <Box 
+        flex 
+        justify="between" 
+        align="center" 
+        color="surface2" 
+        overrideClassName="relative z-50 h-[72px] shadow-sm flex justify-between items-center bg-surface2 text-surface2-contrast"
+      >
         <LogoSlot />
 
         <Box flex direction="row" align="center">

@@ -7,8 +7,8 @@ const DEFAULT_HEIGHT = '200px';
 const DEFAULT_OPTIONS: TrianglifyOptions = {
   variance: 0.75,
   cell_size: 60,
-  x_colors: ['#0f5066', '#115e7a', '#1e293b'],
-  y_colors: ['#1e293b', '#64748b', '#e2e8f0'],
+  x_colors: ['#ea154a', '#BF3F4D', '#121314'],
+  y_colors: ['#121314', '#c5dbe0', '#F5F9FA'],
 };
 
 function toColorArray(colors: string | string[] | undefined): string[] | undefined {

@@ -173,7 +173,7 @@ const Login: React.FC<LoginProps> = ({ cmsMode, restrictedRoles = [] }) => {
               <button
                 type="button" onClick={() => setShowPassword((v) => !v)}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
-                style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', color: '#64748b', zIndex: 20 }}
+                style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', color: '#c5dbe0', zIndex: 20 }}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -188,9 +188,9 @@ const Login: React.FC<LoginProps> = ({ cmsMode, restrictedRoles = [] }) => {
 
         {!cmsMode && (
           <Box flex direction="row" align="center" style={{ width: '100%', gap: '12px' }}>
-            <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
+            <div style={{ flex: 1, height: '1px', background: '#F5F9FA' }} />
             <Text variant="caption" overrideClassName="text-slate-400 text-xs">Don't have an account?</Text>
-            <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
+            <div style={{ flex: 1, height: '1px', background: '#F5F9FA' }} />
           </Box>
         )}
         {!cmsMode && (

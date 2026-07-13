@@ -323,7 +323,7 @@ export const Slider: React.FC<SliderProps> = ({
 
   const scopedStyles = `
     #${containerId} {
-      --slider-track-empty: #e2e8f0;
+      --slider-track-empty: #F5F9FA;
     }
 
     #${inputId} {

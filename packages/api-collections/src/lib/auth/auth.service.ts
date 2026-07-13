@@ -13,14 +13,14 @@ const buildDefaultAvatar = (firstName: string, lastName: string) => ({
   size: 'md' as const,
   status: 'offline' as const,
   shape: 'circle' as const,
-  background: 'linear-gradient(135deg, #0f5066, #e2e8f0)',
+  background: 'linear-gradient(135deg, #ea154a, #F5F9FA)',
 });
 
 const buildDefaultBanner = () => ({
   variance: 0.75,
   cell_size: 40,
-  x_colors: ['#0f5066', '#115e7a', '#1e293b'],
-  y_colors: ['#1e293b', '#64748b', '#e2e8f0'],
+  x_colors: ['#ea154a', '#BF3F4D', '#121314'],
+  y_colors: ['#121314', '#c5dbe0', '#F5F9FA'],
 });
 
 export const authService = {
