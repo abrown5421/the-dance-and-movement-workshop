@@ -5,3 +5,5 @@ export * from './lib/privacy-policy/index';
 export * from './lib/profile/index'
 
 export * from './lib/classes-page/index';
+
+export * from './lib/contact-page/index';

@@ -5,13 +5,6 @@ import LogoSlot from './logo-slot';
 import UserSlot from './user-slot';
 import NavbarSlideout from './navbar-slideout';
 import { NavbarProps } from './navbar.types';
-import { useLocation } from 'react-router-dom';
-
-const capitalize = (str: string): string => 
-  str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
-
-const extractRootSlug = (path: string): string => 
-  path.split('/').filter(Boolean)[0] || '';
 
 export const Navbar: React.FC<NavbarProps> = ({
   pages,
@@ -20,7 +13,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   renderLink,
   onLogout,
 }) => {
-  const { pathname } = useLocation();
   const [slideoutOpen, setSlideoutOpen] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(
     () => typeof window !== 'undefined' && window.innerWidth >= 1024
@@ -38,7 +30,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   const closeSlideout = () => setSlideoutOpen(false);
 
   const showMainLinksInSlideout = !isLargeScreen;
-  const pageTitle = capitalize(extractRootSlug(pathname)) || 'Home';
 
   return (
     <>
@@ -49,7 +40,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         color="surface2" 
         overrideClassName="relative z-50 h-[72px] shadow-sm flex justify-between items-center bg-surface2 text-surface2-contrast"
       >
-        <LogoSlot pageTitle={pageTitle !== 'Home' ? pageTitle : ''} />
+        <LogoSlot />
 
         <Box flex direction="row" align="center">
           <Box className="hidden lg:flex">
