@@ -100,9 +100,38 @@ export const findWithOpenings = async (): Promise<readonly DanceClass[]> =>
     .lean<DanceClass[]>()
     .exec();
 
+export interface ClassesService extends CrudService<DanceClass> {
+  readonly syncFromJackrabbit: () => Promise<ClassSyncResult>;
+  readonly findByCategory: (category: string) => Promise<readonly DanceClass[]>;
+  readonly findWithOpenings: () => Promise<readonly DanceClass[]>;
+  readonly findFilterOptions: () => Promise<{ readonly categories: readonly string[]; readonly genders: readonly string[] }>;
+}
+
+export const findFilterOptions = async (): Promise<{
+  categories: readonly string[];
+  genders: readonly string[];
+}> => {
+  const [category1s, category2s, category3s, genders] = await Promise.all([
+    ClassModel.distinct('category1'),
+    ClassModel.distinct('category2'),
+    ClassModel.distinct('category3'),
+    ClassModel.distinct('gender'),
+  ]);
+
+  const categories = Array.from(
+    new Set([...category1s, ...category2s, ...category3s].filter(Boolean))
+  ).sort() as string[];
+
+  return {
+    categories,
+    genders: (genders as string[]).filter(Boolean).sort(),
+  };
+};
+
 export const classesService: ClassesService = {
   ...base,
   syncFromJackrabbit,
   findByCategory,
   findWithOpenings,
+  findFilterOptions,
 };

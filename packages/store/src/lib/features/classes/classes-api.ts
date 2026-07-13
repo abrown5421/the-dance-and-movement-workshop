@@ -7,14 +7,32 @@ import type { ClassSyncResult } from '@inithium/api-collections';
 export type CreateClassDto = Omit<DanceClass, '_id'>;
 export type UpdateClassDto = Partial<CreateClassDto>;
 
+export interface ClassesQuery extends PaginationQuery {
+  readonly q?: string;
+  readonly gender?: string;
+  readonly category?: string;
+  readonly startDate?: string;
+  readonly endDate?: string;
+}
+
+export interface ClassFilterOptions {
+  readonly categories: readonly string[];
+  readonly genders: readonly string[];
+}
+
 const endpoints = createCrudEndpoints<DanceClass, CreateClassDto, UpdateClassDto>('classes', 'Class');
 
 export const classesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     ...endpoints(builder),
 
-    readAllClasses: builder.query<PaginatedResult<DanceClass>, PaginationQuery | void>({
+    readAllClasses: builder.query<PaginatedResult<DanceClass>, ClassesQuery | void>({
       query: (params) => ({ url: '/classes', params: params ?? {} }),
+      providesTags: ['Class'],
+    }),
+
+    readClassFilterOptions: builder.query<ClassFilterOptions, void>({
+      query: () => '/classes/filters',
       providesTags: ['Class'],
     }),
 
@@ -60,6 +78,7 @@ const {
 
 const {
   useReadAllClassesQuery,
+  useReadClassFilterOptionsQuery,
   useSyncClassesMutation,
   useReadClassesByCategoryQuery,
   useReadOpenClassesQuery,
@@ -75,6 +94,7 @@ export {
   useDeleteClassMutation,
   useDeleteClassesBatchMutation,
   useReadAllClassesQuery,
+  useReadClassFilterOptionsQuery,
   useSyncClassesMutation,
   useReadClassesByCategoryQuery,
   useReadOpenClassesQuery,

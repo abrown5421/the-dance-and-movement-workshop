@@ -12,6 +12,37 @@ export interface CrudService<T> {
   readonly deleteMany: (ids: readonly string[]) => Promise<{ readonly deletedCount: number }>;
 }
 
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const buildFilter = (query: PaginationQuery): Record<string, unknown> => {
+  const conditions: Record<string, unknown>[] = [];
+
+  if (query.search && query.searchFields?.length) {
+    const regex = new RegExp(escapeRegex(query.search), 'i');
+    conditions.push({ $or: query.searchFields.map((field) => ({ [field]: regex })) });
+  }
+
+  if (query.filters) {
+    for (const [key, value] of Object.entries(query.filters)) {
+      if (value) conditions.push({ [key]: value });
+    }
+  }
+
+  if (query.filterAnyOf?.value && query.filterAnyOf.fields.length) {
+    conditions.push({
+      $or: query.filterAnyOf.fields.map((field) => ({ [field]: query.filterAnyOf!.value })),
+    });
+  }
+
+  if (query.dateRange) {
+    const { startField, endField, start, end } = query.dateRange;
+    if (end) conditions.push({ [startField]: { $lte: end } });
+    if (start) conditions.push({ [endField]: { $gte: start } });
+  }
+
+  return conditions.length > 0 ? { $and: conditions } : {};
+};
+
 export const createCrudService = <T>(model: Model<any>): CrudService<T> => {
   const toObjectId = (id: string): Types.ObjectId => new Types.ObjectId(id);
 
@@ -36,10 +67,11 @@ export const createCrudService = <T>(model: Model<any>): CrudService<T> => {
       const skip = (page - 1) * limit;
       const sortField = query.sort ?? '_id';
       const sortDirection = query.order === 'desc' ? -1 : 1;
+      const filter = buildFilter(query);
 
       const [data, total] = await Promise.all([
-        model.find().sort({ [sortField]: sortDirection }).skip(skip).limit(limit).lean<T[]>().exec(),
-        model.countDocuments().exec(),
+        model.find(filter).sort({ [sortField]: sortDirection }).skip(skip).limit(limit).lean<T[]>().exec(),
+        model.countDocuments(filter).exec(),
       ]);
 
       return {
