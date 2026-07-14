@@ -8,3 +8,4 @@ export * from './lib/auth/auth.types.js';
 export * from './lib/settings/settings.types.js';
 export * from './lib/friend/friend.types.js'
 export * from './lib/classes/classes.types.js'
+export * from './lib/staff/staff.types.js';

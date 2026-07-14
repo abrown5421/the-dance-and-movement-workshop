@@ -6,3 +6,4 @@ export * from './lib/settings/index.js';
 export * from './lib/friends/index.js';
 export * from './lib/system-errors/index.js'
 export * from './lib/classes/index.js';
+export * from './lib/staff/index.js'
