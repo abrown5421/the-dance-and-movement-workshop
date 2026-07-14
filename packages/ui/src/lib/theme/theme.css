@@ -9,8 +9,8 @@
   --color-success-contrast: #ffffff;
   --color-warning: #d97706;
   --color-warning-contrast: #000000;
-  --color-danger: #121314;
-  --color-danger-contrast: #ffffff;
+  --color-danger: #d10000;
+  --color-danger-contrast: #fcf2f2;
   
   /* Light Theme Surfaces */
   --color-surface: #F5F9FA;
