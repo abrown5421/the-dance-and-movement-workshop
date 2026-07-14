@@ -9,6 +9,7 @@ import {
   formatSessionRange,
   formatTimeRange,
 } from './classes.utils';
+import { useNavigation } from '@inithium/router';
 
 export interface ClassCardProps {
   danceClass: DanceClass;
@@ -20,8 +21,15 @@ const openRegistration = (link: string, e: React.MouseEvent): void => {
 };
 
 export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
+  const { navigateToKey } = useNavigation();
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const isOpen = danceClass.openings.calculated_openings > 0;
+
+  const handleInstructorClick = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.stopPropagation();
+    setIsDetailOpen(false)
+    navigateToKey('staff');
+  };
 
   return (
     <>
@@ -36,7 +44,6 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
       >
         <Box flex direction="col" className="gap-4 w-full">
           <Box flex direction="col" className="gap-2 items-start">
-            
             <Text variant="h5" overrideClassName="primary-font font-bold tracking-tight text-surface4-contrast">
               {danceClass.name}
             </Text>
@@ -46,8 +53,6 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
           </Box>
 
           <Box overrideClassName="grid grid-cols-2 gap-3 border-t border-surface3-contrast/10 pt-3 w-full text-xs">
-            
-
             <Box flex direction="col" className="gap-2 text-left justify-start">
               <Box overrideClassName="flex items-start gap-1.5 opacity-80">
                 <Clock size={13} className="shrink-0 mt-0.5" />
@@ -191,8 +196,24 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
 
           {danceClass.instructors?.length > 0 && (
             <Box flex direction="col" className="gap-1.5 border-t border-surface3-contrast/10 pt-3">
-              <span className="text-xs opacity-60 font-semibold uppercase tracking-wider">Instructors</span>
-              <span className="text-sm font-medium">{formatInstructors(danceClass.instructors)}</span>
+              <span className="text-xs opacity-60 font-semibold uppercase tracking-wider">Instructors:</span>
+              <Box overrideClassName="flex flex-wrap items-center gap-1">
+                {formatInstructors(danceClass.instructors).map((instructor, index) => (
+                  <React.Fragment key={instructor}>
+                    <Button
+                      variant="ghost"
+                      size="xs"
+                      color="primary"
+                      onClick={handleInstructorClick}
+                    >
+                      {instructor}
+                    </Button>
+                    {index < danceClass.instructors.length - 1 && (
+                      <span className="text-sm opacity-60 mr-1">,</span>
+                    )}
+                  </React.Fragment>
+                ))}
+              </Box>
             </Box>
           )}
         </Box>

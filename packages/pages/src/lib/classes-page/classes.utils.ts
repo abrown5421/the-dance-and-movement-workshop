@@ -24,5 +24,5 @@ export const formatAgeRange = (minAge: string, maxAge: string): string =>
 export const formatSessionRange = (startDate: string, endDate: string): string =>
   `${startDate} - ${endDate}`;
 
-export const formatInstructors = (instructors: readonly string[]): string =>
-  instructors.join(', ');
+export const formatInstructors = (instructors: readonly string[]): readonly string[] =>
+  instructors;
