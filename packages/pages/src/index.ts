@@ -7,3 +7,4 @@ export * from './lib/profile/index'
 export * from './lib/classes-page/index';
 
 export * from './lib/contact-page/index';
+export * from './lib/our-team/index'
