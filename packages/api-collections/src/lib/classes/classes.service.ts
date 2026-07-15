@@ -1,6 +1,6 @@
 import type { DanceClass } from '@inithium/types';
 import { createCrudService, CrudService } from '@inithium/api-core';
-import type { CreateClassDto } from './classes.validation.js';
+import type { CreateClassDto, UpdateClassDto } from './classes.validation.js';
 import { ClassModel } from './classes.model.js';
 
 export interface ClassesService extends CrudService<DanceClass> {
@@ -11,6 +11,7 @@ export interface ClassesService extends CrudService<DanceClass> {
     readonly statuses: readonly string[];
   }>;
   readonly upsertByJackrabbitId: (data: CreateClassDto) => Promise<DanceClass>;
+  readonly updateByJackrabbitId: (id: number, data: UpdateClassDto) => Promise<DanceClass | null>;
 }
 
 const base = createCrudService<DanceClass>(ClassModel);
@@ -57,10 +58,20 @@ export const upsertByJackrabbitId = async (data: CreateClassDto): Promise<DanceC
     .lean<DanceClass>()
     .exec() as Promise<DanceClass>;
 
+export const updateByJackrabbitId = async (id: number, data: UpdateClassDto): Promise<DanceClass | null> =>
+  ClassModel.findOneAndUpdate(
+    { jackrabbit_id: id },
+    { $set: { ...data, last_synced_at: new Date().toISOString() } },
+    { new: true }
+  )
+    .lean<DanceClass>()
+    .exec();
+
 export const classesService: ClassesService = {
   ...base,
   findByCategory,
   findWithOpenSpots,
   findFilterOptions,
   upsertByJackrabbitId,
+  updateByJackrabbitId,
 };
