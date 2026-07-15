@@ -2,14 +2,13 @@ import type { DanceClass } from '@inithium/types';
 import type { PaginatedResult, PaginationQuery } from '@inithium/api-core';
 import { createCrudEndpoints } from '../../base/crud-api-factory.js';
 import { baseApi } from '../../base/base-api.js';
-import type { ClassSyncResult } from '@inithium/api-collections';
 
 export type CreateClassDto = Omit<DanceClass, '_id'>;
 export type UpdateClassDto = Partial<CreateClassDto>;
 
 export interface ClassesQuery extends PaginationQuery {
   readonly q?: string;
-  readonly gender?: string;
+  readonly status?: string;
   readonly category?: string;
   readonly startDate?: string;
   readonly endDate?: string;
@@ -17,7 +16,7 @@ export interface ClassesQuery extends PaginationQuery {
 
 export interface ClassFilterOptions {
   readonly categories: readonly string[];
-  readonly genders: readonly string[];
+  readonly statuses: readonly string[];
 }
 
 const endpoints = createCrudEndpoints<DanceClass, CreateClassDto, UpdateClassDto>('classes', 'Class');
@@ -34,14 +33,6 @@ export const classesApi = baseApi.injectEndpoints({
     readClassFilterOptions: builder.query<ClassFilterOptions, void>({
       query: () => '/classes/filters',
       providesTags: ['Class'],
-    }),
-
-    syncClasses: builder.mutation<ClassSyncResult, void>({
-      query: () => ({
-        url: '/classes/sync',
-        method: 'POST',
-      }),
-      invalidatesTags: ['Class'],
     }),
 
     readClassesByCategory: builder.query<readonly DanceClass[], string>({
@@ -79,7 +70,6 @@ const {
 const {
   useReadAllClassesQuery,
   useReadClassFilterOptionsQuery,
-  useSyncClassesMutation,
   useReadClassesByCategoryQuery,
   useReadOpenClassesQuery,
 } = classesApi;
@@ -95,7 +85,6 @@ export {
   useDeleteClassesBatchMutation,
   useReadAllClassesQuery,
   useReadClassFilterOptionsQuery,
-  useSyncClassesMutation,
   useReadClassesByCategoryQuery,
   useReadOpenClassesQuery,
 };
