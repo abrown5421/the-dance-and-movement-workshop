@@ -14,6 +14,22 @@ router.post('/upsert', validate(CreateClassSchema), async (req, res, next) => {
   }
 });
 
+router.patch('/jackrabbit/:id', validate(UpdateClassSchema), async (req, res, next) => {
+  try {
+    const jackrabbitId = Number(req.params.id);
+    const record = await classesService.updateByJackrabbitId(jackrabbitId, req.body);
+    
+    if (!record) {
+      res.status(404).json({ message: 'Class not found' });
+      return;
+    }
+    
+    res.status(200).json(record);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get('/filters', async (_req, res, next) => {
   try {
     const options = await classesService.findFilterOptions();
