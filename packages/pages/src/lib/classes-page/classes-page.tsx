@@ -4,7 +4,6 @@ import { ClassCard } from './class-card';
 import {
   useReadAllClassesQuery,
   useReadClassFilterOptionsQuery,
-  useSyncClassesMutation,
 } from '@inithium/store';
 
 const ITEMS_PER_PAGE = 12;
@@ -31,12 +30,6 @@ const ClassesPage: React.FC = () => {
 
   const debouncedSearch = useDebouncedValue(searchInput, SEARCH_DEBOUNCE_MS);
 
-  const [syncClasses, { isLoading: isSyncing, isError: isSyncError }] = useSyncClassesMutation();
-
-  useEffect(() => {
-    syncClasses();
-  }, [syncClasses]);
-
   useEffect(() => {
     setPage(1);
   }, [debouncedSearch, category, startDate, endDate]);
@@ -62,7 +55,7 @@ const ClassesPage: React.FC = () => {
     endDate: endDate || undefined,
   });
 
-  const isInitialLoading = isSyncing || isLoading;
+  const isInitialLoading = isLoading;
 
   if (isInitialLoading) {
     return (
@@ -149,12 +142,6 @@ const ClassesPage: React.FC = () => {
           </Box>
         </Box>
       </Box>
-
-      {isSyncError && (
-        <Text variant="caption" color="danger">
-          Could not sync with Jackrabbit — showing last known class list.
-        </Text>
-      )}
 
       {data.data.length === 0 ? (
         <Box padding="md" flex justify="center" align="center">

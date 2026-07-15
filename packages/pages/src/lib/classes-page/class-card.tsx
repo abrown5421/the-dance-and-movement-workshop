@@ -1,27 +1,29 @@
 import React, { useState } from 'react';
 import { Box, Button, Text } from '@inithium/ui';
-import { Calendar, Clock, MapPin, DollarSign, Users } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users } from 'lucide-react';
 import type { DanceClass } from '@inithium/types';
 import { Dialog } from '@inithium/ui';
 import {
+  buildRegistrationLink,
+  formatAvailability,
   formatInstructors,
-  formatMeetingDays,
   formatSessionRange,
   formatTimeRange,
 } from './classes.utils';
-
-export interface ClassCardProps {
-  danceClass: DanceClass;
-}
 
 const openRegistration = (link: string, e: React.MouseEvent): void => {
   e.stopPropagation();
   window.open(link, '_blank', 'noopener,noreferrer');
 };
 
+export interface ClassCardProps {
+  danceClass: DanceClass;
+}
+
 export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const isOpen = danceClass.openings.calculated_openings > 0;
+  const isOpen = danceClass.open_spots > 0;
+  const registrationLink = buildRegistrationLink(danceClass.jackrabbit_id);
 
   return (
     <>
@@ -36,7 +38,6 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
       >
         <Box flex direction="col" className="gap-4 w-full">
           <Box flex direction="col" className="gap-2 items-start">
-            
             <Text variant="h5" overrideClassName="primary-font font-bold tracking-tight text-surface4-contrast">
               {danceClass.name}
             </Text>
@@ -46,13 +47,11 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
           </Box>
 
           <Box overrideClassName="grid grid-cols-2 gap-3 border-t border-surface3-contrast/10 pt-3 w-full text-xs">
-            
-
             <Box flex direction="col" className="gap-2 text-left justify-start">
               <Box overrideClassName="flex items-start gap-1.5 opacity-80">
                 <Clock size={13} className="shrink-0 mt-0.5" />
                 <Box flex direction="col" className="leading-none">
-                  <span className="font-semibold text-[11px]">{formatMeetingDays(danceClass.meeting_days)}</span>
+                  <span className="font-semibold text-[11px]">{danceClass.days}</span>
                   <span className="text-[10px] opacity-70 mt-0.5">
                     {formatTimeRange(danceClass.start_time, danceClass.end_time)}
                   </span>
@@ -69,10 +68,11 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
                 </Box>
               </Box>
             </Box>
-            <Box className="gap-1.5 flex flex-col items-end">
-              <Box overrideClassName="flex items-center gap-1.5 text-primary font-bold text-xl">
-                <DollarSign size={16} className="shrink-0" />
-                <span>{danceClass.tuition.fee.toFixed(2)}</span>
+
+            <Box className="gap-1.5 flex flex-col items-end justify-start">
+              <Box overrideClassName="flex items-center gap-1.5 text-surface4-contrast/70">
+                <MapPin size={13} className="shrink-0" />
+                <span className="text-[11px] font-medium text-right">{danceClass.location}</span>
               </Box>
             </Box>
           </Box>
@@ -82,11 +82,7 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
           <Box overrideClassName="flex items-center gap-1.5">
             <Users size={13} className={isOpen ? 'text-primary' : 'opacity-40'} />
             <Text variant="caption" color={isOpen ? 'primary' : 'surface'} overrideClassName="font-semibold text-xs">
-              {isOpen
-                ? `${danceClass.openings.calculated_openings} openings`
-                : danceClass.waitlist
-                  ? 'Waitlist available'
-                  : 'Class full'}
+              {formatAvailability(danceClass.open_spots, danceClass.waitlist_count, danceClass.class_size)}
             </Text>
           </Box>
           <Button
@@ -94,10 +90,14 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
             color="primary"
             size="sm"
             disabled={!isOpen}
-            onClick={(e) => isOpen && openRegistration(danceClass.online_reg_link, e)}
+            onClick={(e) => isOpen && openRegistration(registrationLink, e)}
           >
             {isOpen ? 'Register' : 'Full'}
           </Button>
+          {/*
+            Registration link is built from `jackrabbit_id` via
+            `buildRegistrationLink` — see classes.utils.ts.
+          */}
         </Box>
       </Box>
 
@@ -111,7 +111,7 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
             label: isOpen ? 'Complete Registration' : 'Class Full',
             color: 'primary',
             disabled: !isOpen,
-            onClick: () => isOpen && window.open(danceClass.online_reg_link, '_blank', 'noopener,noreferrer'),
+            onClick: () => isOpen && window.open(registrationLink, '_blank', 'noopener,noreferrer'),
           },
         ]}
       >
@@ -123,6 +123,11 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
             {danceClass.category2 && (
               <span className="bg-surface3-contrast/5 text-surface3-contrast/70 text-xs px-2.5 py-1 rounded-full">
                 {danceClass.category2}
+              </span>
+            )}
+            {danceClass.category3 && (
+              <span className="bg-surface3-contrast/5 text-surface3-contrast/70 text-xs px-2.5 py-1 rounded-full">
+                {danceClass.category3}
               </span>
             )}
           </Box>
@@ -140,19 +145,11 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
 
           <Box overrideClassName="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-surface3-contrast/5 p-4 rounded-xl text-sm">
             <Box flex direction="col" className="gap-3">
-              <Box overrideClassName="flex items-center gap-2.5">
-                <DollarSign size={16} className="text-primary" />
-                <Box flex direction="col">
-                  <span className="text-xs opacity-60">Tuition</span>
-                  <span className="font-bold text-base text-primary">${danceClass.tuition.fee.toFixed(2)} / {danceClass.billing_cycle || 'Cycle'}</span>
-                </Box>
-              </Box>
-
               <Box overrideClassName="flex items-start gap-2.5">
                 <Clock size={16} className="mt-0.5 opacity-70" />
                 <Box flex direction="col">
                   <span className="text-xs opacity-60">Schedule</span>
-                  <span className="font-semibold">{formatMeetingDays(danceClass.meeting_days)}</span>
+                  <span className="font-semibold">{danceClass.days}</span>
                   <span className="text-xs opacity-70">{formatTimeRange(danceClass.start_time, danceClass.end_time)}</span>
                 </Box>
               </Box>
@@ -173,7 +170,7 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
                 <Box flex direction="col">
                   <span className="text-xs opacity-60">Availability</span>
                   <span className="font-semibold">
-                    {isOpen ? `${danceClass.openings.calculated_openings} spots remaining` : 'No open spots'}
+                    {formatAvailability(danceClass.open_spots, danceClass.waitlist_count, danceClass.class_size)}
                   </span>
                 </Box>
               </Box>
@@ -181,20 +178,34 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
               <Box overrideClassName="flex items-start gap-2.5">
                 <MapPin size={16} className="mt-0.5 opacity-70" />
                 <Box flex direction="col">
-                  <span className="text-xs opacity-60">Location / Room</span>
-                  <span className="font-medium">{danceClass.location_name}</span>
-                  {danceClass.room && <span className="text-xs opacity-70">Room: {danceClass.room}</span>}
+                  <span className="text-xs opacity-60">Location</span>
+                  <span className="font-medium">{danceClass.location}</span>
                 </Box>
               </Box>
             </Box>
           </Box>
 
-          {danceClass.instructors?.length > 0 && (
+          {danceClass.instructors && (
             <Box flex direction="col" className="gap-1.5 border-t border-surface3-contrast/10 pt-3">
               <span className="text-xs opacity-60 font-semibold uppercase tracking-wider">Instructors</span>
               <span className="text-sm font-medium">{formatInstructors(danceClass.instructors)}</span>
             </Box>
           )}
+
+          {danceClass.notes && (
+            <Box flex direction="col" className="gap-1.5 border-t border-surface3-contrast/10 pt-3">
+              <span className="text-xs opacity-60 font-semibold uppercase tracking-wider">Notes</span>
+              <Text variant="body" overrideClassName="text-sm leading-relaxed whitespace-pre-wrap">
+                {danceClass.notes}
+              </Text>
+            </Box>
+          )}
+
+          {/*
+            Tuition/fee still isn't on the new DanceClass shape at all — if
+            that's coming back too, let me know where it lives and I'll
+            wire it up the same way as the registration link.
+          */}
         </Box>
       </Dialog>
     </>
