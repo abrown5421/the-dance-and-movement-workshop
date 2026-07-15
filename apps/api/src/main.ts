@@ -25,6 +25,7 @@ import {
   systemErrorsRouter,
   SystemErrorModel,
   classesRouter,
+  instructorsRouter,
 } from '@inithium/api-collections';
 import { createAssetManager } from '@inithium/asset-manager';
 import {
@@ -163,6 +164,7 @@ app.use('/api/file-manager', fileManagerRouter);
 app.use('/api/friends', friendsRouter);
 app.use('/api/system-errors', systemErrorsRouter);
 app.use('/api/classes', classesRouter);
+app.use('/api/instructors', instructorsRouter);
 
 app.get('/', (_req, res) => {
   res.send({ message: 'Inithium API' });

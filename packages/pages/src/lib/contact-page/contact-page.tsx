@@ -252,11 +252,11 @@ const ContactPage: React.FC = () => {
         <Box flex direction="col" className="gap-4">
           <Box flex align="start" className="gap-3">
             <MapPin size={20} className="text-surface4-contrast shrink-0 mt-0.5" />
-            <Text variant="body2" color="primary">64200 Van Dyke Ave, Washington, MI 48095</Text>
+            <Text variant="body2" color="primary">64007 Van Dyke Rd. Washington, MI 48095</Text>
           </Box>
           <Box flex align="center" className="gap-3">
             <Phone size={20} className="text-surface4-contrast shrink-0" />
-            <Text variant="body2" color="primary">555-555-5555</Text>
+            <Text variant="body2" color="primary">(586)-201-9347</Text>
           </Box>
           <Box flex align="center" className="gap-3">
             <Mail size={20} className="text-surface4-contrast shrink-0" />
@@ -265,13 +265,13 @@ const ContactPage: React.FC = () => {
           <Box flex className="gap-3">
             <Clock size={20} className="text-surface4-contrast shrink-0" />
             <Box flex direction="col">
-              <Text variant="body2" color="primary">Mon: 9AM - 7PM</Text>
-              <Text variant="body2" color="primary">Tue: 9AM - 7PM</Text>
-              <Text variant="body2" color="primary">Wed: 9AM - 7PM</Text>
-              <Text variant="body2" color="primary">Thu: 9AM - 7PM</Text>
-              <Text variant="body2" color="primary">Fri: 9AM - 7PM</Text>
-              <Text variant="body2" color="primary">Sat: 9AM - 7PM</Text>
-              <Text variant="body2" color="primary">Sun: 9AM - 7PM</Text>
+              <Text variant="body2" color="primary">Mon: 3PM - 8:30PM</Text>
+              <Text variant="body2" color="primary">Tue: 3PM - 8:30PM</Text>
+              <Text variant="body2" color="primary">Wed: 3PM - 8:30PM</Text>
+              <Text variant="body2" color="primary">Thu: 3PM - 8:30PM</Text>
+              <Text variant="body2" color="primary">Closed</Text>
+              <Text variant="body2" color="primary">Sat: 11AM - 3PM</Text>
+              <Text variant="body2" color="primary">Closed</Text>
             </Box>
           </Box>
         </Box>
