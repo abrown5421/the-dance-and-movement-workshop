@@ -9,6 +9,7 @@ import {
   formatInstructors,
   formatSessionRange,
   formatTimeRange,
+  formatTuition,
 } from './classes.utils';
 
 const openRegistration = (link: string, e: React.MouseEvent): void => {
@@ -24,6 +25,7 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const isOpen = danceClass.open_spots > 0;
   const registrationLink = buildRegistrationLink(danceClass.jackrabbit_id);
+  const tuition = formatTuition(danceClass.tuition_fee);
 
   return (
     <>
@@ -37,13 +39,27 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
         overrideClassName="p-5 bg-surface4 w-full md:w-[calc(50%-8px)] lg:w-[calc(25%-12px)] shadow-md hover:shadow-xl hover:scale-[1.01] transition-all duration-200 cursor-pointer select-none border border-surface3-contrast/5"
       >
         <Box flex direction="col" className="gap-4 w-full">
-          <Box flex direction="col" className="gap-2 items-start">
-            <Text variant="h5" overrideClassName="primary-font font-bold tracking-tight text-surface4-contrast">
-              {danceClass.name}
-            </Text>
-            <div className="w-fit bg-surface text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase shadow-sm">
-              {danceClass.category1}
-            </div>
+          <Box flex direction="row" justify="between" align="start" className="gap-2 w-full">
+            <Box flex direction="col" className="gap-2 items-start">
+              <Text variant="h5" overrideClassName="primary-font font-bold tracking-tight text-surface4-contrast">
+                {danceClass.name}
+              </Text>
+              <div className="w-fit bg-surface text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase shadow-sm">
+                {danceClass.category1}
+              </div>
+            </Box>
+
+            {tuition && (
+              <Box flex direction="col" className="items-end shrink-0">
+                <Text
+                  variant="h5"
+                  overrideClassName="primary-font font-extrabold tracking-tight text-primary leading-none"
+                >
+                  {tuition}
+                </Text>
+                <span className="text-[10px] opacity-60 mt-0.5">/ month</span>
+              </Box>
+            )}
           </Box>
 
           <Box overrideClassName="grid grid-cols-2 gap-3 border-t border-surface3-contrast/10 pt-3 w-full text-xs">
@@ -94,10 +110,6 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
           >
             {isOpen ? 'Register' : 'Full'}
           </Button>
-          {/*
-            Registration link is built from `jackrabbit_id` via
-            `buildRegistrationLink` — see classes.utils.ts.
-          */}
         </Box>
       </Box>
 
@@ -116,19 +128,28 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
         ]}
       >
         <Box flex direction="col" className="gap-5 py-2">
-          <Box overrideClassName="flex flex-wrap items-center gap-2">
-            <span className="bg-primary/10 text-primary text-xs font-bold px-2.5 py-1 rounded-full">
-              {danceClass.category1}
-            </span>
-            {danceClass.category2 && (
-              <span className="bg-surface3-contrast/5 text-surface3-contrast/70 text-xs px-2.5 py-1 rounded-full">
-                {danceClass.category2}
+          <Box flex direction="row" justify="between" align="center" className="flex-wrap gap-2">
+            <Box overrideClassName="flex flex-wrap items-center gap-2">
+              <span className="bg-primary/10 text-primary text-xs font-bold px-2.5 py-1 rounded-full">
+                {danceClass.category1}
               </span>
-            )}
-            {danceClass.category3 && (
-              <span className="bg-surface3-contrast/5 text-surface3-contrast/70 text-xs px-2.5 py-1 rounded-full">
-                {danceClass.category3}
-              </span>
+              {danceClass.category2 && (
+                <span className="bg-surface3-contrast/5 text-surface3-contrast/70 text-xs px-2.5 py-1 rounded-full">
+                  {danceClass.category2}
+                </span>
+              )}
+              {danceClass.category3 && (
+                <span className="bg-surface3-contrast/5 text-surface3-contrast/70 text-xs px-2.5 py-1 rounded-full">
+                  {danceClass.category3}
+                </span>
+              )}
+            </Box>
+
+            {tuition && (
+              <Text variant="h5" overrideClassName="font-extrabold text-primary leading-none">
+                {tuition}
+                <span className="text-xs font-medium opacity-60 ml-1">/ month</span>
+              </Text>
             )}
           </Box>
 
@@ -200,12 +221,6 @@ export const ClassCard: React.FC<ClassCardProps> = ({ danceClass }) => {
               </Text>
             </Box>
           )}
-
-          {/*
-            Tuition/fee still isn't on the new DanceClass shape at all — if
-            that's coming back too, let me know where it lives and I'll
-            wire it up the same way as the registration link.
-          */}
         </Box>
       </Dialog>
     </>
