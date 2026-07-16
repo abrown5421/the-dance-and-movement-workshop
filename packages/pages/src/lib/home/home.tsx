@@ -32,7 +32,7 @@ const Home: React.FC = () => {
       </Box>
       <Box flex direction='col' justify='center' align='center' className='flex-1 min-h-0 px-5 md:px-40'>
         <img 
-          src="http://localhost:3000/api/assets/by-key/e95b8553-01bd-484b-ab8f-e3697354b5b3.png" 
+          src={`${import.meta.env?.VITE_API_ORIGIN}/api/assets/by-key/e95b8553-01bd-484b-ab8f-e3697354b5b3.png`}
           className="h-full w-full max-h-full object-contain"
         />
       </Box>
