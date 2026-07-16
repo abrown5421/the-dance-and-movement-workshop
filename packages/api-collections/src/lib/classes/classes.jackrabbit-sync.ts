@@ -1,6 +1,8 @@
 import type { JackrabbitOpeningsResponse } from '@inithium/types';
+import type { AnyBulkWriteOperation } from 'mongoose';
 import { mapJackrabbitRowToEnrichment } from './classes.jackrabbit-mapper.js';
 import { ClassModel } from './classes.model.js';
+import type { DanceClass } from '@inithium/types';
 
 const OPENINGS_URL = 'https://app.jackrabbitclass.com/jr3.0/Openings/OpeningsJson?orgid=558395';
 const SYNC_COOLDOWN_MS = 2 * 60 * 1000;
@@ -37,14 +39,14 @@ export const syncFromJackrabbitOpenings = async (
   inFlight = (async () => {
     const { rows } = await fetchOpenings();
 
-    const ops = rows.map((row) => {
+    const ops: AnyBulkWriteOperation<DanceClass>[] = rows.map((row) => {
       const enrichment = mapJackrabbitRowToEnrichment(row);
       return {
         updateOne: {
           filter: { jackrabbit_id: enrichment.jackrabbit_id },
           update: {
             $set: { ...enrichment, last_synced_at: new Date().toISOString() },
-            $unset: { archived_at: '' },
+            $unset: { archived_at: '' as const },
             $setOnInsert: {
               instructor_ids: [],
               waitlist_count: 0,
