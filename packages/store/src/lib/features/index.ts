@@ -10,3 +10,4 @@ export * from './file-manager/file-manager-api'
 export * from './friends/friends-api'
 export * from './system-errors/system-errors-api'
 export * from './classes/classes-api'
+export * from './instructors/instructors-api';

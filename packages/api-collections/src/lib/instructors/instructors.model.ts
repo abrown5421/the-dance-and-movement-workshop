@@ -32,6 +32,7 @@ const instructorSchema = new Schema<Instructor>(
     workPhone:       { type: String, trim: true },
     classes:         { type: String, default: '' },
     address:         { type: addressSchema, required: true },
+    user_id:         { type: Schema.Types.ObjectId, ref: 'User', index: true },
     last_synced_at:  { type: String },
   },
   { timestamps: true }

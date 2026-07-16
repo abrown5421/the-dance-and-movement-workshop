@@ -13,6 +13,14 @@ export interface InstructorsService extends CrudService<Instructor> {
   readonly upsertByJackrabbitId: (data: CreateInstructorDto) => Promise<Instructor>;
 }
 
+type UserLookupFn = (email: string) => Promise<{ _id: string } | null>;
+
+let userLookupFn: UserLookupFn | null = null;
+
+export const setUserLookupFn = (fn: UserLookupFn): void => {
+  userLookupFn = fn;
+};
+
 const base = createCrudService<Instructor>(InstructorModel);
 
 export const findByPosition = async (position: string): Promise<readonly Instructor[]> =>
@@ -48,14 +56,34 @@ export const findFilterOptions = async (): Promise<{
   };
 };
 
-export const upsertByJackrabbitId = async (data: CreateInstructorDto): Promise<Instructor> =>
-  InstructorModel.findOneAndUpdate(
+export const upsertByJackrabbitId = async (data: CreateInstructorDto): Promise<Instructor> => {
+  const existing = await InstructorModel.findOne({ jackrabbit_id: data.jackrabbit_id })
+    .lean<Instructor | null>()
+    .exec();
+
+  let user_id = existing?.user_id;
+
+  if (!user_id && data.email && userLookupFn) {
+    const matchedUser = await userLookupFn(data.email.trim().toLowerCase());
+    if (matchedUser) {
+      user_id = matchedUser._id;
+    }
+  }
+
+  return InstructorModel.findOneAndUpdate(
     { jackrabbit_id: data.jackrabbit_id },
-    { $set: { ...data, last_synced_at: new Date().toISOString() } },
+    {
+      $set: {
+        ...data,
+        ...(user_id ? { user_id } : {}),
+        last_synced_at: new Date().toISOString(),
+      },
+    },
     { new: true, upsert: true, setDefaultsOnInsert: true }
   )
     .lean<Instructor>()
     .exec() as Promise<Instructor>;
+};
 
 export const instructorsService: InstructorsService = {
   ...base,

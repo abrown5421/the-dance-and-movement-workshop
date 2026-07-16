@@ -28,6 +28,7 @@ export const CreateInstructorSchema = z.object({
   workPhone:       z.string().optional(),
   classes:         z.string().optional(),
   address:         AddressSchema,
+  user_id:         z.string().optional(),
   last_synced_at:  z.string().optional(),
 }) satisfies z.ZodType<Omit<Instructor, '_id'>>;
 

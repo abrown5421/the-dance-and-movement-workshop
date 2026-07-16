@@ -26,5 +26,6 @@ export interface Instructor {
   workPhone?: string;
   classes?: string;
   address: InstructorAddress;
+  user_id?: string;
   last_synced_at?: string;
 }

@@ -26,6 +26,7 @@ import {
   SystemErrorModel,
   classesRouter,
   instructorsRouter,
+  setUserLookupFn,
 } from '@inithium/api-collections';
 import { createAssetManager } from '@inithium/asset-manager';
 import {
@@ -182,6 +183,14 @@ app.use(
 
 async function bootstrap() {
   await connectDB(mongoUri);
+
+  setUserLookupFn(async (email: string) => {
+    const user = await UserModel.findOne({ email: email.toLowerCase() })
+      .select('_id')
+      .lean<{ _id: string } | null>()
+      .exec();
+    return user;
+  });
 
   await runHydration({
     AssetModel,
