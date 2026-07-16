@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Text, Input, Button } from '@inithium/ui';
 import { MapPin, Phone, Mail, Clock, RefreshCw } from 'lucide-react';
 import { SocialIcon } from 'react-social-icons';
@@ -269,9 +269,9 @@ const ContactPage: React.FC = () => {
               <Text variant="body2" color="primary">Tue: 3PM - 8:30PM</Text>
               <Text variant="body2" color="primary">Wed: 3PM - 8:30PM</Text>
               <Text variant="body2" color="primary">Thu: 3PM - 8:30PM</Text>
-              <Text variant="body2" color="primary">Closed</Text>
+              <Text variant="body2" color="primary">Fri: Closed</Text>
               <Text variant="body2" color="primary">Sat: 11AM - 3PM</Text>
-              <Text variant="body2" color="primary">Closed</Text>
+              <Text variant="body2" color="primary">Sun: Closed</Text>
             </Box>
           </Box>
         </Box>
