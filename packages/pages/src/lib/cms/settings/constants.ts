@@ -8,7 +8,8 @@ export const SETTING_LABELS: Record<string, string> = {
   'profile-info-gender':    'Show Gender Field',
   'profile-info-bio':       'Show Bio Field',
   'profile-info-dark-mode': 'Enable Dark Mode Toggle',
-  'friend-module':         'Enable User Friendship'
+  'friend-module':         'Enable User Friendship',
+  'authentication-module': 'Enable Authentication'
 };
 
 export const SETTING_DESCRIPTIONS: Record<string, string> = {
@@ -21,7 +22,8 @@ export const SETTING_DESCRIPTIONS: Record<string, string> = {
   'profile-info-gender':    'Display the gender field on user profile pages.',
   'profile-info-bio':       'Display the bio field on user profile pages.',
   'profile-info-dark-mode': 'Allow users to toggle dark mode from their profile.',
-    'friend-module':       'Allow users to add eachother as friends'
+    'friend-module':       'Allow users to add eachother as friends',
+    'authentication-module': 'Allow for account creation and login'
 };
 
 export const SECTION_KEYS: Record<string, string[]> = {
@@ -34,5 +36,6 @@ export const SECTION_KEYS: Record<string, string[]> = {
     'profile-info-bio',
     'profile-info-dark-mode',
     'friend-module',
+    'authentication-module',
   ],
 };

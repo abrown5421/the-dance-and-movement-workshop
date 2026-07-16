@@ -7,7 +7,7 @@ import React, {
 import { matchPath } from 'react-router-dom'; 
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { Page } from '@inithium/types';
-import { useReadAllPagesQuery } from '@inithium/store';
+import { useReadAllPagesQuery, useAuthModuleEnabled } from '@inithium/store';
 import { navigationService } from '../navigation/navigation-service';
 import { useRouteGuard } from '../hooks/use-route-guard';
 import AnimatedPage, { AnimatedPageHandle } from './animated-page';
@@ -15,10 +15,13 @@ import { Box } from '@inithium/ui';
 import { Text } from '@inithium/ui';
 import PageNotFound from './page-not-found';
 
+const AUTH_GATED_PAGE_KEYS = ['login', 'sign-up'];
+
 const TransitionRouter: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { data: pages, isLoading, isError } = useReadAllPagesQuery();
+  const authModuleEnabled = useAuthModuleEnabled();
   const [currentPage, setCurrentPage] = useState<Page | null>(null);
   const animatedPageRef = useRef<AnimatedPageHandle>(null);
   const isTransitioning = useRef(false);
@@ -96,6 +99,7 @@ const TransitionRouter: React.FC = () => {
     <Routes>
       {pages
         .filter((p: Page) => p.isActive)
+        .filter((p: Page) => authModuleEnabled || !AUTH_GATED_PAGE_KEYS.includes(p.key))
         .map((page: Page) => (
           <Route
             key={page.key}

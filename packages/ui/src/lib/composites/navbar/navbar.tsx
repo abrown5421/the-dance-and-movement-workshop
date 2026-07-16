@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useAuthModuleEnabled } from '@inithium/store';
 import { Box, Button } from '../../components';
 import NavSlot from './nav-slot';
 import LogoSlot from './logo-slot';
 import UserSlot from './user-slot';
 import NavbarSlideout from './navbar-slideout';
 import { NavbarProps } from './navbar.types';
+
+const AUTH_GATED_PAGE_KEYS = ['login', 'sign-up'];
 
 export const Navbar: React.FC<NavbarProps> = ({
   pages,
@@ -13,6 +16,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   renderLink,
   onLogout,
 }) => {
+  const authModuleEnabled = useAuthModuleEnabled();
   const [slideoutOpen, setSlideoutOpen] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(
     () => typeof window !== 'undefined' && window.innerWidth >= 1024
@@ -25,6 +29,10 @@ export const Navbar: React.FC<NavbarProps> = ({
     setIsLargeScreen(mq.matches);
     return () => mq.removeEventListener('change', handler);
   }, []);
+
+  const visiblePages = authModuleEnabled
+    ? pages
+    : pages.filter((page) => !AUTH_GATED_PAGE_KEYS.includes(page.key));
 
   const openSlideout = () => setSlideoutOpen(true);
   const closeSlideout = () => setSlideoutOpen(false);
@@ -44,7 +52,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         <Box flex direction="row" align="center">
           <Box className="hidden lg:flex">
-            <NavSlot pages={pages} renderLink={renderLink} />
+            <NavSlot pages={visiblePages} renderLink={renderLink} />
           </Box>
 
           <Box className="flex lg:hidden">
@@ -73,7 +81,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       </Box>
 
       <NavbarSlideout
-        mainPages={showMainLinksInSlideout ? pages : []}
+        mainPages={showMainLinksInSlideout ? visiblePages : []}
         profilePages={profilePages}
         isOpen={slideoutOpen}
         onClose={closeSlideout}
