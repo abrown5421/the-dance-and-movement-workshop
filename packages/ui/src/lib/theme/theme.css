@@ -25,8 +25,8 @@
 
 html[data-theme='dark'] {
   /* Dark Theme Surfaces */
-  --color-surface: #121314;
-  --color-surface-contrast: #ffffff;
+  --color-surface: #F5F9FA;
+  --color-surface-contrast: #282724;
   --color-surface2: #f6f7f8;
   --color-surface2-contrast: #1f1f1e;
   --color-surface3: #e6f2f5;
