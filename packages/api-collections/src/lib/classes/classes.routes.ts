@@ -57,6 +57,16 @@ router.get('/open', async (_req, res, next) => {
   }
 });
 
+router.post('/sync', async (req, res, next) => {
+  try {
+    const force = req.query.force === 'true';
+    const result = await classesService.syncFromJackrabbitOpenings({ force }); //Property 'syncFromJackrabbitOpenings' does not exist on type 'ClassesService'.ts(2339)
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
 const crudRouter = createCrudRouter(classesService, {
   onCreate: CreateClassSchema,
   onUpdate: UpdateClassSchema,

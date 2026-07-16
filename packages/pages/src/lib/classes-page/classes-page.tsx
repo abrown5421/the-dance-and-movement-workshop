@@ -4,6 +4,7 @@ import { ClassCard } from './class-card';
 import {
   useReadAllClassesQuery,
   useReadClassFilterOptionsQuery,
+  useSyncClassesMutation,
 } from '@inithium/store';
 
 const ITEMS_PER_PAGE = 12;
@@ -55,7 +56,13 @@ const ClassesPage: React.FC = () => {
     endDate: endDate || undefined,
   });
 
-  const isInitialLoading = isLoading;
+  const [syncClasses, { isLoading: isSyncing }] = useSyncClassesMutation();
+
+  useEffect(() => {
+    syncClasses().catch(() => {});
+  }, []);
+  
+  const isInitialLoading = isLoading || isSyncing;
 
   if (isInitialLoading) {
     return (

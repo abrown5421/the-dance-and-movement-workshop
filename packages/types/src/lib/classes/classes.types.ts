@@ -108,4 +108,10 @@ export interface DanceClass {
   notes?: string;
   lesson_plans: number;
   last_synced_at?: string;
+  min_age?: string;
+  max_age?: string;
+  room?: string;
+  gender?: string;
+  master_class?: boolean;
+  tuition_fee?: number;
 }

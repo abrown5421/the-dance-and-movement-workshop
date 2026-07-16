@@ -2,6 +2,7 @@ import type { DanceClass } from '@inithium/types';
 import { createCrudService, CrudService } from '@inithium/api-core';
 import type { CreateClassDto, UpdateClassDto } from './classes.validation.js';
 import { ClassModel } from './classes.model.js';
+import { syncFromJackrabbitOpenings, type JackrabbitSyncResult } from './classes.jackrabbit-sync.js';
 
 export interface ClassesService extends CrudService<DanceClass> {
   readonly findByCategory: (category: string) => Promise<readonly DanceClass[]>;
@@ -12,6 +13,7 @@ export interface ClassesService extends CrudService<DanceClass> {
   }>;
   readonly upsertByJackrabbitId: (data: CreateClassDto) => Promise<DanceClass>;
   readonly updateByJackrabbitId: (id: number, data: UpdateClassDto) => Promise<DanceClass | null>;
+  readonly syncFromJackrabbitOpenings: (options?: { force?: boolean }) => Promise<JackrabbitSyncResult>;
 }
 
 const base = createCrudService<DanceClass>(ClassModel);
@@ -74,4 +76,5 @@ export const classesService: ClassesService = {
   findFilterOptions,
   upsertByJackrabbitId,
   updateByJackrabbitId,
+  syncFromJackrabbitOpenings //Object literal may only specify known properties, and 'syncFromJackrabbitOpenings' does not exist in type 'ClassesService'.ts(2353)
 };
