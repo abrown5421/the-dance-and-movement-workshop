@@ -30,7 +30,6 @@ const App: React.FC = () => {
   const settings = useSelector(selectAllSettings);
   const alertData = useSelector((state: RootState) => state.alert.current);
   
-  useDarkMode(activeUser?.dark_mode);
   useFriendNotifications();
   useActivityHeartbeat();
   

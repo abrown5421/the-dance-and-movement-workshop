@@ -28,7 +28,6 @@ const App: React.FC = () => {
   const alertData = useSelector((state: RootState) => state.alert.current);
   const [logout] = useLogoutMutation();
   const { navigateToKey } = useNavigation();
-  useDarkMode(activeUser?.dark_mode);
   useFriendNotifications();
   useActivityHeartbeat();
 
