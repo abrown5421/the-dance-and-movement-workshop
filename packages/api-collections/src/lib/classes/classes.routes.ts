@@ -18,12 +18,12 @@ router.patch('/jackrabbit/:id', validate(UpdateClassSchema), async (req, res, ne
   try {
     const jackrabbitId = Number(req.params.id);
     const record = await classesService.updateByJackrabbitId(jackrabbitId, req.body);
-    
+
     if (!record) {
       res.status(404).json({ message: 'Class not found' });
       return;
     }
-    
+
     res.status(200).json(record);
   } catch (err) {
     next(err);
@@ -60,7 +60,7 @@ router.get('/open', async (_req, res, next) => {
 router.post('/sync', async (req, res, next) => {
   try {
     const force = req.query.force === 'true';
-    const result = await classesService.syncFromJackrabbitOpenings({ force }); //Property 'syncFromJackrabbitOpenings' does not exist on type 'ClassesService'.ts(2339)
+    const result = await classesService.syncFromJackrabbitOpenings({ force });
     res.status(200).json(result);
   } catch (err) {
     next(err);

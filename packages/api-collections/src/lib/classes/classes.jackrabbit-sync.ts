@@ -3,10 +3,10 @@ import { mapJackrabbitRowToEnrichment } from './classes.jackrabbit-mapper.js';
 import { ClassModel } from './classes.model.js';
 
 const OPENINGS_URL = 'https://app.jackrabbitclass.com/jr3.0/Openings/OpeningsJson?orgid=558395';
-const SYNC_COOLDOWN_MS = 2 * 60 * 1000; // don't re-fetch more than once per 2 min
+const SYNC_COOLDOWN_MS = 2 * 60 * 1000;
 
 let lastSyncedAt = 0;
-let inFlight: Promise<{ synced: number; skipped: boolean }> | null = null;
+let inFlight: Promise<JackrabbitSyncResult> | null = null;
 
 const fetchOpenings = async (): Promise<JackrabbitOpeningsResponse> => {
   const res = await fetch(OPENINGS_URL);
@@ -18,6 +18,7 @@ const fetchOpenings = async (): Promise<JackrabbitOpeningsResponse> => {
 
 export interface JackrabbitSyncResult {
   synced: number;
+  archived: number;
   skipped: boolean;
 }
 
@@ -28,7 +29,7 @@ export const syncFromJackrabbitOpenings = async (
   const now = Date.now();
 
   if (!options.force && now - lastSyncedAt < SYNC_COOLDOWN_MS) {
-    return { synced: 0, skipped: true };
+    return { synced: 0, archived: 0, skipped: true };
   }
 
   if (inFlight) return inFlight;
@@ -43,11 +44,9 @@ export const syncFromJackrabbitOpenings = async (
           filter: { jackrabbit_id: enrichment.jackrabbit_id },
           update: {
             $set: { ...enrichment, last_synced_at: new Date().toISOString() },
+            $unset: { archived_at: '' },
             $setOnInsert: {
-              status: 'Active',
-              instructors_ids: [],
               instructor_ids: [],
-              open_spots: 0,
               waitlist_count: 0,
               future_drops: 0,
               future_enrolls: 0,
@@ -62,8 +61,19 @@ export const syncFromJackrabbitOpenings = async (
     });
 
     const result = await ClassModel.bulkWrite(ops, { ordered: false });
+
+    const fetchedIds = rows.map((row) => row.id);
+    const archiveResult = await ClassModel.updateMany(
+      { jackrabbit_id: { $nin: fetchedIds }, status: { $ne: 'Archived' } },
+      { $set: { status: 'Archived', archived_at: new Date().toISOString() } }
+    );
+
     lastSyncedAt = Date.now();
-    return { synced: result.upsertedCount + result.modifiedCount, skipped: false };
+    return {
+      synced: result.upsertedCount + result.modifiedCount,
+      archived: archiveResult.modifiedCount,
+      skipped: false,
+    };
   })();
 
   try {

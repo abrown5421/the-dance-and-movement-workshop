@@ -108,6 +108,7 @@ export interface DanceClass {
   notes?: string;
   lesson_plans: number;
   last_synced_at?: string;
+  archived_at?: string;
   min_age?: string;
   max_age?: string;
   room?: string;

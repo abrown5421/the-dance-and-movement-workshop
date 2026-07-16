@@ -29,6 +29,7 @@ export const CreateClassSchema = z.object({
   notes:           z.string().optional(),
   lesson_plans:    z.coerce.number().default(0),
   last_synced_at:  z.string().optional(),
+  archived_at:     z.string().optional(),
   min_age:      z.string().optional(),
   max_age:      z.string().optional(),
   room:         z.string().optional(),

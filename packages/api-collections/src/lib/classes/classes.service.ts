@@ -20,13 +20,14 @@ const base = createCrudService<DanceClass>(ClassModel);
 
 export const findByCategory = async (category: string): Promise<readonly DanceClass[]> =>
   ClassModel.find({
+    status: { $ne: 'Archived' },
     $or: [{ category1: category }, { category2: category }, { category3: category }],
   })
     .lean<DanceClass[]>()
     .exec();
 
 export const findWithOpenSpots = async (): Promise<readonly DanceClass[]> =>
-  ClassModel.find({ open_spots: { $gt: 0 } })
+  ClassModel.find({ open_spots: { $gt: 0 }, status: { $ne: 'Archived' } })
     .lean<DanceClass[]>()
     .exec();
 
@@ -35,9 +36,9 @@ export const findFilterOptions = async (): Promise<{
   statuses: readonly string[];
 }> => {
   const [category1s, category2s, category3s, statuses] = await Promise.all([
-    ClassModel.distinct('category1'),
-    ClassModel.distinct('category2'),
-    ClassModel.distinct('category3'),
+    ClassModel.distinct('category1', { status: { $ne: 'Archived' } }),
+    ClassModel.distinct('category2', { status: { $ne: 'Archived' } }),
+    ClassModel.distinct('category3', { status: { $ne: 'Archived' } }),
     ClassModel.distinct('status'),
   ]);
 
@@ -76,5 +77,5 @@ export const classesService: ClassesService = {
   findFilterOptions,
   upsertByJackrabbitId,
   updateByJackrabbitId,
-  syncFromJackrabbitOpenings //Object literal may only specify known properties, and 'syncFromJackrabbitOpenings' does not exist in type 'ClassesService'.ts(2353)
+  syncFromJackrabbitOpenings,
 };
