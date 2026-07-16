@@ -46,7 +46,7 @@ const crudRouter = createCrudRouter(instructorsService, {
   onUpdate: UpdateInstructorSchema,
   forcePagination: true,
   search: { fields: ['firstName', 'lastName', 'email'] },
-  filterableFields: ['status', 'orgID'],
+  filterableFields: ['status', 'orgID', 'isInstructor'],
   anyOfFilter: { queryParam: 'position', fields: ['position1', 'position2', 'position3'] },
 });
 

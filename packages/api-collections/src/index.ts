@@ -24,6 +24,7 @@ export {
   CreateInstructorSchema,
   UpdateInstructorSchema,
   type InstructorsService,
+  setUserLookupFn,
   type CreateInstructorDto,
   type UpdateInstructorDto
 } from './lib/instructors/index.js';
