@@ -30,6 +30,12 @@ const classSchema = new Schema<DanceClass>(
     notes:           { type: String, trim: true },
     lesson_plans:    { type: Number, required: true, default: 0 },
     last_synced_at:  { type: String },
+    min_age:      { type: String, trim: true },
+    max_age:      { type: String, trim: true },
+    room:         { type: String, trim: true },
+    gender:       { type: String, trim: true },
+    master_class: { type: Boolean },
+    tuition_fee:  { type: Number },
   },
   { timestamps: true }
 );

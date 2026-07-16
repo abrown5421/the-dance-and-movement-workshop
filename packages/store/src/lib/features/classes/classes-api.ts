@@ -20,6 +20,14 @@ export interface ClassFilterOptions {
 }
 
 const endpoints = createCrudEndpoints<DanceClass, CreateClassDto, UpdateClassDto>('classes', 'Class');
+export interface ClassSyncResult {
+  readonly synced: number;
+  readonly skipped: boolean;
+}
+
+export interface ClassSyncArgs {
+  readonly force?: boolean;
+}
 
 export const classesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -50,6 +58,15 @@ export const classesApi = baseApi.injectEndpoints({
           ? [...result.map(({ _id }) => ({ type: 'Class' as const, id: _id })), 'Class']
           : ['Class'],
     }),
+
+    syncClasses: builder.mutation<ClassSyncResult, ClassSyncArgs | void>({
+      query: (args) => ({
+        url: '/classes/sync',
+        method: 'POST',
+        params: args?.force ? { force: 'true' } : undefined,
+      }),
+      invalidatesTags: ['Class'],
+    }),
   }),
   overrideExisting: false,
 });
@@ -74,6 +91,8 @@ const {
   useReadOpenClassesQuery,
 } = classesApi;
 
+const { useSyncClassesMutation } = classesApi;
+
 export {
   useCreateClassMutation,
   useClassQuery,
@@ -87,4 +106,5 @@ export {
   useReadClassFilterOptionsQuery,
   useReadClassesByCategoryQuery,
   useReadOpenClassesQuery,
+  useSyncClassesMutation,
 };
