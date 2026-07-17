@@ -129,7 +129,6 @@ const ContactPage: React.FC = () => {
         flex
         direction="col"
         color="surface"
-        padding="xl"
         borderRadius="lg"
         className="w-full lg:w-[60%] gap-5"
       >
@@ -279,7 +278,7 @@ const ContactPage: React.FC = () => {
         <Box borderRadius="lg" className="overflow-hidden w-full h-64">
           <iframe
             title="The Dance and Movement Workshop Location"
-            src="https://www.google.com/maps?q=64200+Van+Dyke+Ave,+Washington,+MI+48095&output=embed"
+            src="https://www.google.com/maps?q=64007+Van+Dyke+Rd,+Washington,+MI+48095&output=embed"
             width="100%"
             height="100%"
             style={{ border: 0 }}

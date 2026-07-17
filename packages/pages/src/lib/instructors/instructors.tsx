@@ -6,17 +6,17 @@ import { InstructorCard } from './instructor-card';
 
 const LayoutConfiguration = {
   SINGLE_ROW: {
-    container: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 auto-rows-fr gap-6 p-4 w-full h-full",
+    container: "grid grid-cols-1 auto-rows-[100%] overflow-y-auto sm:overflow-visible sm:grid-cols-2 lg:grid-cols-4 sm:auto-rows-fr gap-6 p-4 w-full h-full",
     card: "h-full",
     hasPagination: false
   },
   DOUBLE_ROW_STATIC: {
-    container: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 auto-rows-fr gap-6 p-4 w-full h-full",
+    container: "grid grid-cols-1 auto-rows-[100%] overflow-y-auto sm:overflow-visible sm:grid-cols-2 lg:grid-cols-4 sm:auto-rows-fr gap-6 p-4 w-full h-full",
     card: "h-full",
     hasPagination: false
   },
   DOUBLE_ROW_PAGINATED: {
-    container: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 auto-rows-fr gap-6 p-4 w-full h-full",
+    container: "grid grid-cols-1 auto-rows-[100%] overflow-y-auto sm:overflow-visible sm:grid-cols-2 lg:grid-cols-4 sm:auto-rows-fr gap-6 p-4 w-full h-full",
     card: "h-full",
     hasPagination: true
   }
